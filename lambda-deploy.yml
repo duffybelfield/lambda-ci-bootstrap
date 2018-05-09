@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Push cloudformation updates to Lambda for grafana dashboards
+
+Resources:
+
+  Lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      Timeout: 30
+      Policies:
+        - AmazonRekognitionFullAccess
+        - AWSLambdaBasicExecutionRole
+      CodeUri: lambda/.
+      Environment:
+        #Variables:
+        #  GF_API_URL: https://grafana.test.enc.versentpoc.com.au
+        #  GF_API_KEY: eyJrIjoiUXhRYzNEcWtuRjU0ak5VV3hzZTVRdUl6QXFOVlJIU0ciLCJuIjoiZGVwbG95IiwiaWQiOjF9
+      Events:
+        Timer:
+          Type: Schedule
+          Properties:
+            Schedule: rate(2 minutes)

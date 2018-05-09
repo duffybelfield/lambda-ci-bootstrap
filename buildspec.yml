@@ -1,0 +1,33 @@
+---
+version: 0.2
+
+#env:
+  #variables:
+
+phases:
+  install:
+    commands:
+      # Debugging
+      - printenv | sort
+      - cd $CODEBUILD_SRC_DIR/lambda
+      # Debugging
+      - pwd
+      - find .
+      # Install CI dependencies
+      - npm install
+
+  pre_build:
+    commands:
+      # Run tests
+      - npm test
+  
+  build:
+    commands:
+      # package for lambda deploy
+      - cd $CODEBUILD_SRC_DIR
+      - aws cloudformation package --template-file lambda-deploy.yml --s3-bucket $ARTIFACT_S3_BUCKET --output-template-file packaged.yml
+
+
+artifacts:
+  files:
+    - packaged.yml
